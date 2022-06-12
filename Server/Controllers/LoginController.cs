@@ -7,13 +7,6 @@ namespace Server.Controllers
     [ApiController]
     [Route("api/[controller]")]
 
-    class Parole
-    {
-        public string? ParolaDefault { get; set; }
-        public string? ParolaCurenta { get; set; }
-    }
-
-
     public class LoginController : ControllerBase
     {
         private readonly DataBaseContext _dbcontext;
