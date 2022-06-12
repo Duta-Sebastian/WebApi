@@ -312,7 +312,7 @@ namespace Server.Models
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-        public virtual DbSet<Clase1> Class_1 { get; set; }
-        public virtual DbSet<AfisareNote>AfsNote { get; set; }
+        public virtual DbSet<Clase1> Class_1 { get; set; } = null!;
+        public virtual DbSet<AfisareNote> AfsNote { get; set; } = null!;
     }
 }
