@@ -25,7 +25,7 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route("Login")]
-        public async Task<IActionResult> GetElevi(string nume)
+        public async Task<IActionResult> GetElevi(string nume, string parola)
         {
             try 
             {
@@ -34,12 +34,13 @@ namespace Server.Controllers
                 {
                     foreach (Elevi elevi in listElevi)
                     {
-                        if (elevi.NumeDefault == nume)
+                        if (elevi.NumeDefault == nume || elevi.NumeCurent == nume) 
                         {
-                            Parole parola = new Parole();
-                            parola.ParolaDefault = elevi.ParolaDefault;
-                            parola.ParolaCurenta = elevi.ParolaCurenta;
-                            return Ok(parola);
+                            if (elevi.ParolaDefault == parola || elevi.ParolaCurenta == parola)
+                            {
+                                return Ok("1");
+                            }
+                            else return Ok("0");                           
                         }
                             
                     }
@@ -71,6 +72,31 @@ namespace Server.Controllers
                     Value = disciplina
                 };
                 var x = _dbcontext.Class_1.FromSqlRaw("exec GetClase @prof,@disciplina", parameter, parameter1);
+                return Ok(x);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("AfisNote")]
+        public async Task<IActionResult> AfisNote(string materia, string elev)
+        {
+            try
+            {
+                var parameter = new SqlParameter
+                {
+                    ParameterName = "@materia",
+                    Value = materia
+                };
+                var parameter1 = new SqlParameter
+                {
+                    ParameterName = "@elev",
+                    Value = elev
+                };
+                var x = _dbcontext.AfsNote.FromSqlRaw("exec AfisNote @materia,@elev", parameter, parameter1);
                 return Ok(x);
             }
             catch (Exception ex)

@@ -5,10 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Server.Models
 {
-    public class Clase1
-    {
-        public string? Clasa { get; set; }
-    }
+
     public partial class DataBaseContext : DbContext
     {
         public DataBaseContext()
@@ -303,12 +300,19 @@ namespace Server.Models
                     entity.HasNoKey();
                     entity.Property(e => e.Clasa);
                 });
-             
+            modelBuilder.Entity<AfisareNote>(entity =>
+            {
+                entity.HasNoKey();
+                entity.Property(e => e.note);
+                entity.Property(e => e.Data);
+            });
 
-        OnModelCreatingPartial(modelBuilder);
+
+            OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
         public virtual DbSet<Clase1> Class_1 { get; set; }
+        public virtual DbSet<AfisareNote>AfsNote { get; set; }
     }
 }
