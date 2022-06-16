@@ -306,6 +306,11 @@ namespace Server.Models
                 entity.Property(e => e.note);
                 entity.Property(e => e.Data);
             });
+            modelBuilder.Entity<AdaugaNota>(entity =>
+            {
+                entity.HasNoKey();
+                entity.Property(e => e.Result);
+            });
 
 
             OnModelCreatingPartial(modelBuilder);
@@ -314,5 +319,6 @@ namespace Server.Models
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
         public virtual DbSet<Clase1> Class_1 { get; set; } = null!;
         public virtual DbSet<AfisareNote> AfsNote { get; set; } = null!;
+        public virtual DbSet<AdaugaNota> AdgNota { get;set ; } = null!;
     }
 }

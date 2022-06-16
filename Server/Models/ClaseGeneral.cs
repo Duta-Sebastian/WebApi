@@ -9,4 +9,8 @@
         public Single? note { get; set; }
         public string? Data { get; set; }
     }
+    public class AdaugaNota
+    {
+        public string? Result { get; set; }
+    }
 }

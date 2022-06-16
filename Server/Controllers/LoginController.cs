@@ -5,7 +5,7 @@ using Server.Models;
 namespace Server.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Login/[controller]")]
 
     public class LoginController : ControllerBase
     {
@@ -47,7 +47,7 @@ namespace Server.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpGet]
         [Route("sp1")]
         public async Task<IActionResult> sp1(string prof,string disciplina)
@@ -98,5 +98,39 @@ namespace Server.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("AdaugNote")]
+        public async Task<IActionResult> AdaugNote(string data, string nume , string materia, int nota)
+        {
+            try
+            {
+                var parameter = new SqlParameter
+                {
+                    ParameterName = "@data",
+                    Value = data
+                };
+                var parameter1 = new SqlParameter
+                {
+                    ParameterName = "@elev",
+                    Value = nume
+                };
+                var parameter2 = new SqlParameter
+                {
+                    ParameterName = "@disciplina",
+                    Value = materia
+                };
+                var parameter3 = new SqlParameter
+                {
+                    ParameterName = "@nota",
+                    Value = nota
+                };
+                var x = _dbcontext.AdgNota.FromSqlRaw("exec AdaugaNota @data,@elev,@disciplina,@nota", parameter, parameter1,parameter2,parameter3);
+                return Ok(x);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex);
+            }
+        }
     }
 }

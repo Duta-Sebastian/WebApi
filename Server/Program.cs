@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Server;
 using Server.Models;
+using Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,8 +12,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IUserService, AuthentificateM>();
 
-    builder.Services.AddDbContext<DataBaseContext>(options =>options.UseSqlServer(builder.Configuration.GetConnectionString("CatalogOnlineDB")));
+builder.Services.AddDbContext<DataBaseContext>(options =>options.UseSqlServer(builder.Configuration.GetConnectionString("CatalogOnlineDB")));
 
 var app = builder.Build();
 
@@ -21,11 +24,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<BasicAuthMiddleware>();
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
+app.UseAuthentication();
 app.MapControllers();
 
 app.Run();
