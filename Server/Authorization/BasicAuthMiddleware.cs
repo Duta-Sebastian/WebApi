@@ -3,7 +3,6 @@ using Server.Authorization;
 using Server.Services;
 using System.Net.Http.Headers;
 using System.Text;
-using Server.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -18,7 +17,7 @@ public class BasicAuthMiddleware
 
     public async Task Invoke(HttpContext context, IUserService userService)
     {
-        
+        var ver = VerClass.verif;
         try
         {
             var authHeader = AuthenticationHeaderValue.Parse(context.Request.Headers["Authorization"]);
@@ -26,8 +25,12 @@ public class BasicAuthMiddleware
             var credentials = Encoding.UTF8.GetString(credentialBytes).Split(':', 2);
             var nume = credentials[0];
             var parola = credentials[1];
+            Console.WriteLine(ver);
             // authenticate credentials with user service and attach user to http context
-            var ctrl = await userService.Authenticate(nume, parola);
+            User? ctrl = null;
+            if (ver == "profesor") ctrl = await userService.AuthenticateProfesor(nume, parola);
+            if (ver == "elev") ctrl = await userService.AuthentificateElev(nume, parola);
+            
             if(ctrl!=null)
             {
                context.Items["User"] = ctrl;

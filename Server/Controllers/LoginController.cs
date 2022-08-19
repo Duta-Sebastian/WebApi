@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Server.Authorization;
 using Server.Models;
 namespace Server.Controllers
 {
     [ApiController]
     [Route("api/Login/[controller]")]
-
+    [Authorize]
     public class LoginController : ControllerBase
     {
         private readonly DataBaseContext _dbcontext;
@@ -16,9 +17,10 @@ namespace Server.Controllers
             _dbcontext = _context;
         }
 
+        [AllowAnonymous]
         [HttpGet]
-        [Route("Login")]
-        public async Task<IActionResult> GetElevi(string nume, string parola)
+        [Route("LoginElev")]
+        public async Task<IActionResult> LoginElev(string nume, string parola)
         {
             try 
             {
@@ -47,7 +49,39 @@ namespace Server.Controllers
             }
         }
 
-        [Authorize]
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("LoginProfesor")]
+        public async Task<IActionResult> LoginProfesor(string nume, string parola)
+        {
+            try
+            {
+                List<Profesori> listProfesori = _dbcontext.Profesoris.ToList();
+                if (listProfesori != null)
+                {
+                    foreach (Profesori profesori in listProfesori)
+                    {
+                        if (profesori.NumeDefault == nume || profesori.NumeCurent == nume)
+                        {
+                            if (profesori.ParolaDefault == parola || profesori.ParolaCurenta == parola)
+                            {
+                                return Ok("1");
+                            }
+                            else return Ok("0");
+                        }
+
+                    }
+                    return Ok("Nu exista profesori cu acest username");
+                }
+                else return Ok("Nu sunt profesori");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [AllowAnonymous]
         [HttpGet]
         [Route("sp1")]
         public async Task<IActionResult> sp1(string prof,string disciplina)
@@ -73,31 +107,7 @@ namespace Server.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("AfisNote")]
-        public async Task<IActionResult> AfisNote(string materia, string elev)
-        {
-            try
-            {
-                var parameter = new SqlParameter
-                {
-                    ParameterName = "@materia",
-                    Value = materia
-                };
-                var parameter1 = new SqlParameter
-                {
-                    ParameterName = "@elev",
-                    Value = elev
-                };
-                var x = _dbcontext.AfsNote.FromSqlRaw("exec AfisNote @materia,@elev", parameter, parameter1);
-                return Ok(x);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
+        [Profesor]
         [HttpPost]
         [Route("AdaugNote")]
         public async Task<IActionResult> AdaugNote(string data, string nume , string materia, int nota)
@@ -127,9 +137,9 @@ namespace Server.Controllers
                 var x = _dbcontext.AdgNota.FromSqlRaw("exec AdaugaNota @data,@elev,@disciplina,@nota", parameter, parameter1,parameter2,parameter3);
                 return Ok(x);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Ok(ex);
+                return Ok("Nereusit");
             }
         }
     }
