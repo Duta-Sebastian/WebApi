@@ -3,6 +3,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Server.Authorization;
 using Server.Models;
+using System.Reflection.Metadata;
+
 namespace Server.Controllers
 {
     [ApiController]
@@ -33,9 +35,16 @@ namespace Server.Controllers
                         {
                             if (elevi.ParolaDefault == parola || elevi.ParolaCurenta == parola)
                             {
-                                return Ok("1");
+                                var parameter = new SqlParameter
+                                {
+                                    ParameterName = "@nume",
+                                    Value = nume
+                                };
+                                var x = _dbcontext.ClsNumDs.FromSqlRaw("exec ClsNumD @nume", parameter);
+                                
+                                return Ok(new { Check = "1", MainBody = x });
                             }
-                            else return Ok("0");                           
+                            else return Ok(new { Check = "0"});                           
                         }
                             
                     }

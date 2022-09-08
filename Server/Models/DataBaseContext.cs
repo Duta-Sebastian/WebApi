@@ -294,7 +294,14 @@ namespace Server.Models
 
 
 
-            });                
+            });
+            modelBuilder.Entity<ClsNumD>(entity =>
+            {
+                entity.HasNoKey();
+                entity.Property(e => e.Nume_Default);
+                entity.Property(e => e.Clasa);
+            });
+
             modelBuilder.Entity<Clase1>(entity =>
                 {
                     entity.HasNoKey();
@@ -320,5 +327,6 @@ namespace Server.Models
         public virtual DbSet<Clase1> Class_1 { get; set; } = null!;
         public virtual DbSet<AfisareNote> AfsNote { get; set; } = null!;
         public virtual DbSet<AdaugaNota> AdgNota { get;set ; } = null!;
+        public virtual DbSet<ClsNumD> ClsNumDs { get; set; } = null!;
     }
 }

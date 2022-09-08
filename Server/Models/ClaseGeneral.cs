@@ -13,4 +13,9 @@
     {
         public string? Result { get; set; }
     }
+    public class ClsNumD
+    {
+        public string? Clasa { get; set; }
+        public string? Nume_Default { get; set; }
+    }
 }
